@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>591测试平台</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.min.css' %}">
+    <link rel="shortcut icon" href="{% static  'img/591.ico'%}"/>
+    <style>
+        a {
+            color: #ffffff;
+        }
+<!--        span {-->
+<!--            font-size: 14px;-->
+<!--        }-->
+    </style>
+</head>
+<body>
+    <ul class="nav nav-tabs" style="background-color: #337ab7">
+        <li role="presentation"><a href="#1-1"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> 测试计划工具</a></li>
+        <li role="presentation"><a href="/first_page/"><span class="glyphicon glyphicon-export" aria-hidden="true"></span> 日常BUG工具</a></li>
+    </ul>
+
+     {% block content %}{% endblock %}
+
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.min.js' %}"></script>
+    {% block scripts %}
+  <script>
+<!--    const ul = document.querySelector('.nav')-->
+<!--    ul.addEventListener('click', function(e) {-->
+<!--      if (e.target.tagName === 'A') {-->
+<!--        document.querySelector(".nav .active").classList.remove("active")-->
+<!--        e.target.parentNode.classList.add("active")-->
+<!--      }-->
+<!--    });-->
+    // 手动设置当前活动选项卡
+    const currentUrl = window.location.pathname
+    const links = document.querySelectorAll('.nav a')
+    for (let i = 0; i < links.length; i++) {
+      if (links[i].getAttribute('href') === currentUrl) {
+        links[i].parentNode.classList.add('active')
+        break
+      }
+    }
+  </script>
+{% endblock %}
+</body>
+</html>

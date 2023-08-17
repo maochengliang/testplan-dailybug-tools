@@ -1,0 +1,249 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导出日常BUG</title>
+    <link rel="shortcut icon" href="{% static  'img/591.ico'%}"/>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.min.css' %}">
+    <link rel="shortcut icon" href="{% static  'img/591.ico'%}"/>
+    <style>
+        body {
+            background: #e8e8e8;
+            background-position: 0 300px;
+        }
+
+        a {
+            color: white;
+        }
+
+        .maxbox {
+            width: 520px;
+            height: 540px;
+            background-color: #ffffff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            /* margin-left: 100px;
+            margin-top: -270px; */
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+        }
+
+        button {
+            width: 247px;
+            height: 38px;
+            line-height: 38px;
+            background-color: #0d6efd;
+            color: #ffe6f5;
+            border-radius: 6px;
+            border: 1px solid;
+            margin-top: 20px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            display: none;
+        }
+
+        .loading-overlay .loading-spinner {
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #3498db;
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+
+        .loading-overlay .loading-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        button:hover {
+            background-color: #0b5ed7;
+        }
+
+        .dialogsuccess {
+            position: absolute;
+            top: 60px;
+            /* margin: 60px 0 0 60px; */
+            width: 400px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            background-color: #0d6efd;
+            border: 2px solid #0d6efd;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .dialogfail {
+            position: absolute;
+            top: 60px;
+            /* margin: 60px 0 0 60px; */
+            width: 400px;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            background-color: red;
+            border: 2px solid red;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .show {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+<ul class="nav nav-tabs" style="background-color: #337ab7">
+    <li role="presentation"><a id="current_page_link" href="{% url 'create_plan' %}">测试计划工具</a></li>
+    <li role="presentation" class="active"><a id="bug_page" href="{% url 'down' %}" target="_self">日常BUG工具</a></li>
+</ul>
+
+
+    <div class="maxbox">
+        <div class="loading-overlay">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">下载中...</div>
+        </div>
+
+        <div class="dialog">
+
+        </div>
+        <div class="start">
+            <label for="startDate">请选择开始时间：</label>
+            <input type="date" id="startDate" name="startDate">
+        </div>
+
+        <br>
+        <div class="end">
+            <label for="endDate">请选择结束时间：</label>
+            <input type="date" id="endDate" name="endDate">
+        </div>
+
+        <button>下载日常BUG</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const loadingOverlay = document.querySelector('.loading-overlay');
+
+        function hideLoadingOverlay() {
+            loadingOverlay.style.display = 'none';
+        }
+
+
+        hideLoadingOverlay()
+
+
+        document.querySelector("button").addEventListener("click", () => {
+            document.querySelector(".dialog").innerHTML = ""
+            loadingOverlay.style.display = 'flex'; // 显示加载动画
+            if (document.querySelector(".dialog").classList.contains("dialogsuccess")) {
+                document.querySelector(".dialog").classList.remove("show")
+                document.querySelector(".dialog").classList.remove("dialogsuccess")
+            }
+
+            if (document.querySelector(".dialog").classList.contains("dialogfail")) {
+                document.querySelector(".dialog").classList.remove("show")
+                document.querySelector(".dialog").classList.remove("dialogfail")
+            }
+            //获取日期的值
+            const sTime = document.querySelector("#startDate").value
+            const eTime = document.querySelector("#endDate").value
+            console.log("=============");
+            console.log(sTime, eTime);
+            let fileName = sTime.substring(5, 7);
+            console.log(fileName);
+            let monthNumber = parseInt(fileName, 10);
+
+            if (monthNumber < 10) {
+                // 如果月份小于10，则去除掉零
+                monthNumber = monthNumber.toString(); // 将月份转换为字符串
+                monthNumber = parseInt(monthNumber, 10); // 去除前导零
+            }
+            console.log(monthNumber);
+
+            axios({
+                url: "http://192.168.2.128:8000/download/",
+                method: "POST",
+                responseType: 'blob',
+                data: {
+                    startTime: sTime,
+                    endTime: eTime
+                },
+
+            }).then(res => {
+                console.log("下载成功")
+                const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.setAttribute('download', `${monthNumber}月日常BUG.xls`);
+                link.style.display = 'none';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(downloadUrl);
+                hideLoadingOverlay(); // 隐藏加载动画
+                document.querySelector(".dialog").classList.add("show")
+                document.querySelector(".dialog").classList.add("dialogsuccess")
+                document.querySelector(".dialog").innerHTML = "文件下载成功"
+                setTimeout(() => {
+                    document.querySelector(".dialog").classList.remove("show")
+                }, 2000)
+            }).catch(err => {
+                hideLoadingOverlay(); // 隐藏加载动画
+                document.querySelector(".dialog").classList.add("show")
+                document.querySelector(".dialog").classList.add("dialogfail")
+                document.querySelector(".dialog").innerHTML = "该时间段无日常BUG，重新选择日期试试~"
+                setTimeout(() => {
+                    document.querySelector(".dialog").classList.remove("show")
+                }, 2000);
+                // alert("调用接口失败。。。,原因：可能是所选择日期范围无日常BUG,请重新选择")
+            })
+
+        })
+
+    </script>
+</body>
+
+</html>

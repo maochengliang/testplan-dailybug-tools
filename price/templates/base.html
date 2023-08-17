@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.min.css' %}">
+    <link rel="shortcut icon" href="{% static  'img/591.ico'%}"/>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        a{
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<!--<ul class="nav nav-tabs" style="background-color: #337ab7">-->
+<!--    <li role="presentation" data-toggle="tab" class="active"><a id="current_page_link" href="#">测试计划工具</a></li>-->
+<!--    <li role="presentation" data-toggle="tab" data-target="#text"><a id="bug_page" href="{% url 'down' %}" target="_blank">日常BUG工具</a></li>-->
+<!--</ul>-->
+
+<!--可以实现切换tab切换的效果-->
+<ul class="nav nav-tabs" style="background-color: #337ab7">
+    <li role="presentation"><a class="active" href="#1-1" data-toggle="tab">测试计划工具</a></li>
+    <li role="presentation"><a href="#2-2" data-toggle="tab">日常BUG工具</a></li>
+    <li role="presentation"><a href="#8-1" data-toggle="tab">测试计划工具2</a></li>
+    <li role="presentation"><a href="#8-2" data-toggle="tab">日常BUG工具2</a></li>
+</ul>
+<div id="one" class="tab-content">
+    <p id="1-1" class="tab-pane fade in active">这是文字</p>
+    <p id="2-2" class="tab-pane fade">这是文字2</p>
+    <p id="8-1" class="tab-pane fade">这是文字8</p>
+    <p id="8-2" class="tab-pane fade">这是文字82</p>
+</div>
+
+<!--<div id="two" class="tab-content">-->
+<!--    <p id="8-1" class="tab-pane fade">这是文字8</p>-->
+<!--    <p id="8-2" class="tab-pane fade">这是文字82</p>-->
+<!--</div>-->
+{% block content %} {% endblock %}
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.min.js' %}"></script>
+<script>
+<!--       导航栏切换-->
+<!--   const ul = document.querySelector('.nav')-->
+<!--    ul.addEventListener('click', function (e) {-->
+<!--      if (e.target.tagName === 'A') {-->
+<!--        document.querySelector(".nav-tabs .active").classList.remove("active")-->
+<!--        e.target.parentNode.classList.add("active")-->
+<!--      }-->
+<!--    })-->
+
+
+
+
+
+</script>
+</body>
+</html>
